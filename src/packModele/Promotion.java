@@ -1,5 +1,7 @@
 package packModele;
 
+import packObserver.Observable;
+import packObserver.Observer;
 import packVue.VueFormulaire;
 
 import java.io.File;
@@ -9,9 +11,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
-public class Promotion {
-    // List to store student data
+public class Promotion implements Observable {
+
     private static ArrayList<Etudiant> listStudent = new ArrayList<>();
+    private static ArrayList<Observer> listObservers = new ArrayList<>();
+
 
     // Load CSV file with student data
     public static void loadFileCSV() {
@@ -33,25 +37,50 @@ public class Promotion {
         }
     }
 
-    public static void addStudent() {
-        new Etudiant(
-                VueFormulaire.getTxtNumeroAdd().getText(),
-                VueFormulaire.getTxtLastName().getText(),
-                VueFormulaire.getTxtFirstName().getText(),
-                VueFormulaire.getBoxDpt().getSelectedItem().toString(),
-                VueFormulaire.getBoxBac().getSelectedItem().toString()
-        );
+
+    // Add student to stat list
+    public static void addStudent(Etudiant student) {
+        listStudent.add(student);
+        notifyObservers();
     }
 
-    public static void removeStudent() {
-
+    // Remove student from stat list
+    public static void removeStudent(Etudiant student) {
+        listStudent.remove(student);
+        notifyObservers();
     }
 
+    // Search student in the list
+    public static Etudiant getStudent(String num) {
+        for (Etudiant student : listStudent) {
+            if (student.getNumero().equals(num)) {
+                return student;
+            }
+        }
+        return null;
+    }
 
     // Get list of student
     public static ArrayList<Etudiant> getListStudent() {
         return listStudent;
     }
 
+
+    // Manage observers
+    public static void addObserver(Observer observer) {
+        if (!listObservers.contains(observer)) {
+            listObservers.add(observer);
+        }
+    }
+
+    public static void removeObserver(Observer observer) {
+        listObservers.remove(observer);
+    }
+
+    public static void notifyObservers() {
+        for (Observer obs : listObservers) {
+            obs.update();
+        }
+    }
 }
 

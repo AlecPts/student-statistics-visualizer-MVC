@@ -1,10 +1,13 @@
 package packVue;
 
+import packControleur.ControlAjoutFormulaire;
 import packModele.Promotion;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -17,12 +20,12 @@ import javax.swing.border.EmptyBorder;
 
 public class VueFormulaire extends AbstractVue {
 
-    private final static JTextField txtNumeroAjout = new JTextField(10);
-    private final static JTextField txtNumeroSuppr = new JTextField(10);
-    private final static JTextField txtNom = new JTextField(10);
-    private final static JTextField txtPrenom = new JTextField(10);
-    private final static JComboBox boxBac = new JComboBox();
-    private final static JComboBox boxDpt = new JComboBox();
+    private final JTextField txtNumeroAjout = new JTextField(10);
+    private final JTextField txtNumeroSuppr = new JTextField(10);
+    private final JTextField txtNom = new JTextField(10);
+    private final JTextField txtPrenom = new JTextField(10);
+    private final JComboBox boxBac = new JComboBox();
+    private final JComboBox boxDpt = new JComboBox();
     private final JLabel lblNumeroAjout = new JLabel("Numero:");
     private final JLabel lblNumeroSuppr = new JLabel("Numero:");
     private final JLabel lblNom = new JLabel("Nom:");
@@ -121,35 +124,22 @@ public class VueFormulaire extends AbstractVue {
         this.add(btSuppr, gc);
 
         // Action
-        btAjout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Promotion.addStudent();
+        btAjout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // List of new data to add
+                ArrayList<String> listNewData = new ArrayList<>();
+
+                // Add data from all form input to the list
+                listNewData.add(txtNumeroAjout.getText());
+                listNewData.add(txtNom.getText());
+                listNewData.add(txtPrenom.getText());
+                listNewData.add(boxDpt.getSelectedItem().toString());
+                listNewData.add(boxBac.getSelectedItem().toString());
+
+                // Call the controller
+                ControlAjoutFormulaire controlAddForm = new ControlAjoutFormulaire();
+                controlAddForm.control(listNewData);
             }
         });
-    }
-
-    // Get form data
-    public static JTextField getTxtNumeroAdd() {
-        return txtNumeroAjout;
-    }
-
-    public static JTextField getTxtNumeroRemove() {
-        return txtNumeroSuppr;
-    }
-
-    public static JTextField getTxtLastName() {
-        return txtNom;
-    }
-
-    public static JTextField getTxtFirstName() {
-        return txtPrenom;
-    }
-
-    public static JComboBox getBoxBac() {
-        return boxBac;
-    }
-
-    public static JComboBox getBoxDpt() {
-        return boxDpt;
     }
 }

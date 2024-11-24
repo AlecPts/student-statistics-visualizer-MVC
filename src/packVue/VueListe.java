@@ -1,11 +1,14 @@
 package packVue;
 
+import packControleur.ControlSupprListe;
 import packModele.Etudiant;
 import packModele.Promotion;
+import packObserver.Observable;
+import packObserver.Observer;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -14,7 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 
-public class VueListe extends AbstractVue {
+public class VueListe extends AbstractVue implements Observer {
 
     private final JList liste;
     private final JButton btSuppr = new JButton("Supprimer");
@@ -22,6 +25,9 @@ public class VueListe extends AbstractVue {
 
 
     public VueListe() {
+        // Add VueListe to Observers
+        Promotion.addObserver(this);
+
         liste = new JList();
         liste.setLayoutOrientation(JList.VERTICAL);
    //     liste.setVisibleRowCount(getHeight());
@@ -41,6 +47,24 @@ public class VueListe extends AbstractVue {
         this.pack();
         liste.setVisibleRowCount(this.getHeight()/8);
         this.pack();
+
+        // Action
+        btSuppr.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // List of student's data to remove
+                ArrayList<String> listDataToRemove = new ArrayList<>();
+
+                // Get the student in the list
+                Etudiant studentToRemove = listStudent.get(liste.getSelectedIndex());
+
+                // Add data of the student to remove
+                listDataToRemove.add(studentToRemove.getNumero());
+
+                // Call the controller
+                ControlSupprListe controlRemoveList = new ControlSupprListe();
+                controlRemoveList.control(listDataToRemove);
+            }
+        });
     }
 
     private void remplissageListe() {
@@ -59,5 +83,9 @@ public class VueListe extends AbstractVue {
         liste.setListData(dataStudent.toArray());
 //        this.pack();
     }
-    
+
+    @Override
+    public void update() {
+        remplissageListe();
+    }
 }
