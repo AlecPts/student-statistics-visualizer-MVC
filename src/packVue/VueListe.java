@@ -51,18 +51,18 @@ public class VueListe extends AbstractVue implements Observer {
         // Action
         btSuppr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // List of student's data to remove
-                ArrayList<String> listDataToRemove = new ArrayList<>();
+                // List of student to remove
+                ArrayList<String> listStudentToRemove = new ArrayList<>();
 
                 // Get the student in the list
                 Etudiant studentToRemove = listStudent.get(liste.getSelectedIndex());
 
                 // Add data of the student to remove
-                listDataToRemove.add(studentToRemove.getNumero());
+                listStudentToRemove.add(studentToRemove.getNumero());
 
                 // Call the controller
                 ControlSupprListe controlRemoveList = new ControlSupprListe();
-                controlRemoveList.control(listDataToRemove);
+                controlRemoveList.control(listStudentToRemove);
             }
         });
     }

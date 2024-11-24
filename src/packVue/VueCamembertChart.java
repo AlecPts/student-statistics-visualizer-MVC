@@ -1,6 +1,8 @@
 package packVue;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -8,18 +10,29 @@ import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 import org.jfree.util.Rotation;
+import packModele.Etudiant;
+import packModele.Promotion;
+import packObserver.Observer;
 
-public class VueCamembertChart extends AbstractVue {
+public class VueCamembertChart extends AbstractVue implements Observer {
 
     private Camembert camemb;
 
     public VueCamembertChart() {
+        // Add VueListe to Observers
+        Promotion.addObserver(this);
+
         camemb = new Camembert();
         this.setContentPane(camemb);
         this.pack();
     }
-    
-// internal class
+
+    @Override
+    public void update() {
+        new Camembert();
+    }
+
+    // internal class
     public class Camembert extends ChartPanel {
 
         public Camembert() {
@@ -34,17 +47,29 @@ public class VueCamembertChart extends AbstractVue {
 
         private PieDataset createSampleDataset() {
             final DefaultPieDataset result = new DefaultPieDataset();
-            result.setValue("Java", new Double(43.2));
-            result.setValue("Visual Basic", new Double(10.0));
-            result.setValue("C/C++", new Double(17.5));
-            result.setValue("PHP", new Double(32.5));
-            result.setValue("Perl", new Double(1.0));
+
+            // Get list of student
+            ArrayList<Etudiant> listStudent = Promotion.getListStudent();
+
+            for (Etudiant stu : listStudent) {
+                // Test if value already exist
+                if (result.getKeys().contains(stu.getDepartement())) {
+
+                    // Increment value if data already exist
+                    int currentValue = result.getValue(stu.getDepartement()).intValue();
+                    result.setValue(stu.getDepartement(), currentValue + 1);
+
+                } else {
+                    result.setValue(stu.getDepartement(), 1);
+                }
+            }
+
             return result;
         }
 
         private JFreeChart createChart(final PieDataset dataset) {
             final JFreeChart chart = ChartFactory.createPieChart3D(
-                    "Pie Chart 3D Demo 1", // chart title
+                    "Répartition Géographique", // chart title
                     dataset, // data
                     true, // include legend
                     true,

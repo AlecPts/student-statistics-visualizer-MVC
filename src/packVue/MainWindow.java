@@ -42,10 +42,11 @@ public class MainWindow extends JFrame{
         liste.setTitle("Liste des étudiants");
         liste.setLocation(camemb.getWidth()+histo.getWidth(), 0);
         liste.setVisible(true);
-        
-         //taille de la fenetre
-         this.pack();
+
+        //taille de la fenetre
+        this.pack();
         this.setSize(camemb.getWidth()+histo.getWidth()+liste.getWidth()+18, form.getHeight()+camemb.getHeight()+45);
+        this.setLocationRelativeTo(null);
         
     }
 }   

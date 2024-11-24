@@ -1,6 +1,9 @@
 package packVue;
 
 import packControleur.ControlAjoutFormulaire;
+import packControleur.ControlSupprFormulaire;
+import packControleur.ControlSupprListe;
+import packModele.Etudiant;
 import packModele.Promotion;
 
 import java.awt.GridBagConstraints;
@@ -130,15 +133,29 @@ public class VueFormulaire extends AbstractVue {
                 ArrayList<String> listNewData = new ArrayList<>();
 
                 // Add data from all form input to the list
-                listNewData.add(txtNumeroAjout.getText());
-                listNewData.add(txtNom.getText());
-                listNewData.add(txtPrenom.getText());
+                listNewData.add(txtNumeroAjout.getText().toUpperCase());
+                listNewData.add(txtNom.getText().toUpperCase());
+                listNewData.add(txtPrenom.getText().toUpperCase());
                 listNewData.add(boxDpt.getSelectedItem().toString());
                 listNewData.add(boxBac.getSelectedItem().toString());
 
                 // Call the controller
                 ControlAjoutFormulaire controlAddForm = new ControlAjoutFormulaire();
                 controlAddForm.control(listNewData);
+            }
+        });
+
+        btSuppr.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // List of numero entered
+                ArrayList<String> listNumeroStudent = new ArrayList<>();
+
+                // Get numero entered
+                listNumeroStudent.add(txtNumeroSuppr.getText());
+
+                // Call the controller
+                ControlSupprFormulaire controlRemoveForm = new ControlSupprFormulaire();
+                controlRemoveForm.control(listNumeroStudent);
             }
         });
     }
