@@ -15,6 +15,7 @@ public class Promotion implements Observable {
 
     private static ArrayList<Etudiant> listStudent = new ArrayList<>();
     private static ArrayList<Observer> listObservers = new ArrayList<>();
+    private static Etudiant studentToModify;
 
 
     // Load CSV file with student data
@@ -28,12 +29,17 @@ public class Promotion implements Observable {
                 String line = scan.nextLine();
                 String[] data = line.split(";");
 
+                // Format departement
+                if (Integer.parseInt(data[3]) < 10) {
+                    data[3] = "0" + data[3];
+                }
+
                 // Add student with his data to listStudent
                 listStudent.add(new Etudiant(data[0], data[1], data[2], data[3], data[4]));
             }
 
         } catch (FileNotFoundException e) {
-            System.err.println("Erreur:" + e.getMessage());
+            System.err.println("ERROR :" + e.getMessage());
         }
     }
 
@@ -50,6 +56,11 @@ public class Promotion implements Observable {
         notifyObservers();
     }
 
+    public static void modifyStudent(Etudiant student) {
+        listStudent.set(listStudent.indexOf(studentToModify), student);
+        notifyObservers();
+    }
+
     // Search student in the list
     public static Etudiant getStudent(String num) {
         for (Etudiant student : listStudent) {
@@ -63,6 +74,16 @@ public class Promotion implements Observable {
     // Get list of student
     public static ArrayList<Etudiant> getListStudent() {
         return listStudent;
+    }
+
+    // get student to modify data
+    public static Etudiant getStudentToModify() {
+        return studentToModify;
+    }
+
+    public static void setStudentToModify(Etudiant student) {
+        studentToModify = student;
+        notifyObservers();
     }
 
 

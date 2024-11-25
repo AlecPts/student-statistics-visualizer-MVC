@@ -2,21 +2,27 @@ package packControleur;
 
 import packModele.Etudiant;
 import packModele.Promotion;
+import packVue.VueFormulaire;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class ControlAjoutFormulaire extends AbstractControleur {
+public class ControlModifFormulaire extends AbstractControleur {
 
     @Override
     public void control(ArrayList<String> list) {
         try {
+            Etudiant studentToModify = Promotion.getStudentToModify();
+
             // Exception for numero
             if (!list.getFirst().matches("[0-9]+")) {
                 throw new Exception("The numero must contain only digits");
             }
 
-            if (Promotion.getStudent(list.getFirst()) != null) {
+            if (
+                    Promotion.getStudent(list.getFirst()) != null &&
+                    Promotion.getStudent(list.getFirst()) != studentToModify)
+            {
                 throw new Exception("This number has already been assigned to a student");
             }
 
@@ -48,13 +54,14 @@ public class ControlAjoutFormulaire extends AbstractControleur {
                     break;
             }
 
-            Promotion.addStudent(new Etudiant(
-                    list.get(0),
-                    list.get(1),
-                    list.get(2),
-                    list.get(3),
-                    list.get(4)
-            ));
+            // Modify data
+            studentToModify.setNumero(list.get(0));
+            studentToModify.setFirstName(list.get(1).toUpperCase());
+            studentToModify.setLastName(list.get(2).toUpperCase());
+            studentToModify.setBac(list.get(3).toUpperCase());
+            studentToModify.setDepartement(list.get(4));
+
+            Promotion.modifyStudent(studentToModify);
 
         } catch (Exception e) {
             System.err.println("ERROR : " + e.getMessage());

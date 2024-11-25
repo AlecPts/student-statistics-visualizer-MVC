@@ -1,10 +1,12 @@
 package packVue;
 
 import packControleur.ControlAjoutFormulaire;
+import packControleur.ControlModifFormulaire;
 import packControleur.ControlSupprFormulaire;
 import packControleur.ControlSupprListe;
 import packModele.Etudiant;
 import packModele.Promotion;
+import packObserver.Observer;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,14 +23,14 @@ import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
-public class VueFormulaire extends AbstractVue {
+public class VueFormulaire extends AbstractVue implements Observer {
 
-    private final JTextField txtNumeroAjout = new JTextField(10);
-    private final JTextField txtNumeroSuppr = new JTextField(10);
-    private final JTextField txtNom = new JTextField(10);
-    private final JTextField txtPrenom = new JTextField(10);
-    private final JComboBox boxBac = new JComboBox();
-    private final JComboBox boxDpt = new JComboBox();
+    private static final JTextField txtNumeroAjout = new JTextField(10);
+    private static final JTextField txtNumeroSuppr = new JTextField(10);
+    private static final JTextField txtNom = new JTextField(10);
+    private static final JTextField txtPrenom = new JTextField(10);
+    private static final JComboBox boxBac = new JComboBox();
+    private static final JComboBox boxDpt = new JComboBox();
     private final JLabel lblNumeroAjout = new JLabel("Numero:");
     private final JLabel lblNumeroSuppr = new JLabel("Numero:");
     private final JLabel lblNom = new JLabel("Nom:");
@@ -41,8 +43,12 @@ public class VueFormulaire extends AbstractVue {
     private final JLabel lblSeparation = new JLabel("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
     private final JButton btAjout = new JButton("Ajout");
     private final JButton btSuppr = new JButton("Supprimer");
-    
+    private static final JButton btModif = new JButton("Modifier");
+
     public VueFormulaire() {
+        // Add VueListe to Observers
+        Promotion.addObserver(this);
+
         initFrame();
         this.pack();
     }
@@ -72,6 +78,8 @@ public class VueFormulaire extends AbstractVue {
         boxBac.addItem("Pro");
         boxBac.addItem("Autre");
 
+        // Disable modify button
+        btModif.setEnabled(false);
 
         //placement des objets
         this.setLayout(new GridBagLayout());
@@ -106,7 +114,11 @@ public class VueFormulaire extends AbstractVue {
         gc.gridx = 10;
         this.add(lblEspace, gc);
         gc.gridx = 11;
+        gc.gridy = 0;
         this.add(btAjout, gc);
+        gc.gridx = 11;
+        gc.gridy = 1;
+        this.add(btModif, gc);
         gc.gridx = 0;
         gc.gridy = 2;
         gc.gridwidth = 11;
@@ -158,5 +170,52 @@ public class VueFormulaire extends AbstractVue {
                 controlRemoveForm.control(listNumeroStudent);
             }
         });
+
+        btModif.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // List of modified data
+                ArrayList<String> listModifiedData = new ArrayList<>();
+
+                listModifiedData.add(txtNumeroAjout.getText());
+                listModifiedData.add(txtPrenom.getText());
+                listModifiedData.add(txtNom.getText());
+                listModifiedData.add(boxBac.getSelectedItem().toString());
+                listModifiedData.add(boxDpt.getSelectedItem().toString());
+
+                // Call the controller
+                ControlModifFormulaire controlModifyForm = new ControlModifFormulaire();
+                controlModifyForm.control(listModifiedData);
+
+                // Disable modify button
+                btModif.setEnabled(false);
+
+            }
+        });
+    }
+
+    public static void getStudentDataToModify() {
+        // get the student to modify his data
+        Etudiant studentToModify = Promotion.getStudentToModify();
+
+        txtNumeroAjout.setText(studentToModify.getNumero());
+        txtPrenom.setText(studentToModify.getFirstName());
+        txtNom.setText(studentToModify.getLastName());
+
+        // Format type bac
+        for (int i = 0; i < 5; i++) {
+            if (boxBac.getItemAt(i).toString().matches("^" + studentToModify.getBac() + ".*$")) {
+                boxBac.setSelectedItem(boxBac.getItemAt(i));
+            }
+        }
+
+        boxDpt.setSelectedItem(studentToModify.getDepartement());
+
+        // Enable modify button
+        btModif.setEnabled(true);
+    }
+
+    @Override
+    public void update() {
+        getStudentDataToModify();
     }
 }

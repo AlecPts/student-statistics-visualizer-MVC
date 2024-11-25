@@ -15,24 +15,38 @@ public class Etudiant {
         this.bac = bac;
     }
 
+    // Getter
     public String getNumero() {
         return numero;
     }
-
     public String getLastName() {
         return lastName;
     }
-
     public String getFirstName() {
         return firstName;
     }
-
     public String getDepartement() {
         return departement;
     }
-
     public String getBac() {
         return bac;
+    }
+
+    // Setter
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public void setDepartement(String departement) {
+        this.departement = departement;
+    }
+    public void setBac(String bac) {
+        this.bac = bac;
     }
 
     @Override

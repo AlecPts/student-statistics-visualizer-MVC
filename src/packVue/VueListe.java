@@ -3,14 +3,14 @@ package packVue;
 import packControleur.ControlSupprListe;
 import packModele.Etudiant;
 import packModele.Promotion;
-import packObserver.Observable;
 import packObserver.Observer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -30,9 +30,9 @@ public class VueListe extends AbstractVue implements Observer {
 
         liste = new JList();
         liste.setLayoutOrientation(JList.VERTICAL);
-   //     liste.setVisibleRowCount(getHeight());
+        //     liste.setVisibleRowCount(getHeight());
         JScrollPane scrollPane = new JScrollPane(liste);
-        liste.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        liste.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         this.setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
         gc.fill = GridBagConstraints.BOTH;
@@ -42,27 +42,34 @@ public class VueListe extends AbstractVue implements Observer {
         gc.gridx = 0;
         gc.gridy = 1;
         this.add(btSuppr, gc);
-       // liste.setPreferredSize(new Dimension (150,500));
+        // liste.setPreferredSize(new Dimension (150,500));
         remplissageListe();
         this.pack();
-        liste.setVisibleRowCount(this.getHeight()/8);
+        liste.setVisibleRowCount(this.getHeight() / 8);
         this.pack();
 
         // Action
         btSuppr.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // List of student to remove
+                // List of student's numero to remove
                 ArrayList<String> listStudentToRemove = new ArrayList<>();
 
-                // Get the student in the list
-                Etudiant studentToRemove = listStudent.get(liste.getSelectedIndex());
-
-                // Add data of the student to remove
-                listStudentToRemove.add(studentToRemove.getNumero());
+                for (int index : liste.getSelectedIndices()) {
+                    Etudiant studentToRemove = listStudent.get(index);
+                    listStudentToRemove.add(studentToRemove.getNumero());
+                }
 
                 // Call the controller
                 ControlSupprListe controlRemoveList = new ControlSupprListe();
                 controlRemoveList.control(listStudentToRemove);
+            }
+        });
+
+        liste.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    Promotion.setStudentToModify(listStudent.get(liste.getSelectedIndex()));
+                }
             }
         });
     }
@@ -73,9 +80,9 @@ public class VueListe extends AbstractVue implements Observer {
         for (Etudiant student : listStudent) {
             dataStudent.add(
                     student.getNumero() + " - " +
-                    student.getLastName() + " " +
-                    student.getFirstName() + " " +
-                    "(" + student.getDepartement() + ")"
+                            student.getLastName() + " " +
+                            student.getFirstName() + " " +
+                            "(" + student.getDepartement() + ")"
             );
         }
 
