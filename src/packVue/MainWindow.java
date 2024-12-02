@@ -8,6 +8,7 @@ public class MainWindow extends JFrame{
     private final VueFormulaire form;
     private final VueCamembertChart camemb;
     private final VueListe liste;
+    private final VueTable table;
     private final VueHistogrammeChart histo;
     
     public MainWindow() {
@@ -43,9 +44,19 @@ public class MainWindow extends JFrame{
         liste.setLocation(camemb.getWidth()+histo.getWidth(), 0);
         liste.setVisible(true);
 
+        //vue table
+        table=new VueTable();
+        this.add(table);
+        table.setTitle("Table des étudiants");
+        table.setLocation(camemb.getWidth()+histo.getWidth()+liste.getWidth(), 0);
+        table.setVisible(true);
+
         //taille de la fenetre
         this.pack();
-        this.setSize(camemb.getWidth()+histo.getWidth()+liste.getWidth()+18, form.getHeight()+camemb.getHeight()+45);
+        this.setSize(
+                camemb.getWidth()+histo.getWidth()+liste.getWidth()+table.getWidth()+18,
+                form.getHeight()+camemb.getHeight()+45
+        );
         this.setLocationRelativeTo(null);
         
     }

@@ -194,24 +194,33 @@ public class VueFormulaire extends AbstractVue implements Observer {
     }
 
     public static void getStudentDataToModify() {
-        // get the student to modify his data
-        Etudiant studentToModify = Promotion.getStudentToModify();
+        try {
+            // get the student to modify his data
+            Etudiant studentToModify = Promotion.getStudentToModify();
 
-        txtNumeroAjout.setText(studentToModify.getNumero());
-        txtPrenom.setText(studentToModify.getFirstName());
-        txtNom.setText(studentToModify.getLastName());
-
-        // Format type bac
-        for (int i = 0; i < 5; i++) {
-            if (boxBac.getItemAt(i).toString().matches("^" + studentToModify.getBac() + ".*$")) {
-                boxBac.setSelectedItem(boxBac.getItemAt(i));
+            if (studentToModify == null) {
+                throw new Exception("The student to modify does not exist");
             }
+
+            txtNumeroAjout.setText(studentToModify.getNumero());
+            txtPrenom.setText(studentToModify.getFirstName());
+            txtNom.setText(studentToModify.getLastName());
+
+            // Format type bac
+            for (int i = 0; i < 5; i++) {
+                if (boxBac.getItemAt(i).toString().matches("^" + studentToModify.getBac() + ".*$")) {
+                    boxBac.setSelectedItem(boxBac.getItemAt(i));
+                }
+            }
+
+            boxDpt.setSelectedItem(studentToModify.getDepartement());
+
+            // Enable modify button
+            btModif.setEnabled(true);
+
+        } catch (Exception e) {
+            System.err.println("ERROR : " + e.getMessage());
         }
-
-        boxDpt.setSelectedItem(studentToModify.getDepartement());
-
-        // Enable modify button
-        btModif.setEnabled(true);
     }
 
     @Override

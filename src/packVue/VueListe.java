@@ -29,7 +29,7 @@ public class VueListe extends AbstractVue implements Observer {
         Promotion.addObserver(this);
 
         liste = new JList();
-        liste.setLayoutOrientation(JList.VERTICAL);
+        //liste.setLayoutOrientation(JList.VERTICAL);
         //     liste.setVisibleRowCount(getHeight());
         JScrollPane scrollPane = new JScrollPane(liste);
         liste.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
